@@ -10,10 +10,9 @@ GAME RULES:
 -Implemented by: Dimitar Dimitrov
 -Originaly created by: Jonas Schmedtmann https://twitter.com/jonasschmedtman
 */
-var scores, roundScore, activePlayer, dice, gamePlaying;
+var scores, roundScore, prevRoll, activePlayer, dice, gamePlaying;
 
 init();
-
 
 // You can have --> callBack Function, argument function
 document.querySelector('.btn-roll').addEventListener('click', function() { 
@@ -26,13 +25,16 @@ document.querySelector('.btn-roll').addEventListener('click', function() {
         diceDOM = document.querySelector('.dice');
         diceDOM.style.display = 'block';
         diceDOM.src = 'dice-' + dice + '.png';
-        
-        // 3. Update the round score if the rolled dice is not 1
-        // var curTemp = parseInt(document.querySelector('#current-' + activePlayer).textContent);
 
-        if (dice !== 1) {
+        if (dice === 6 && prevRoll === 6) {
+            scores[activePlayer] = 0;
+            document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
+            nextPlayer();
+        }
+        else if (dice !== 1) {
             roundScore += dice;
             document.querySelector('#current-' + activePlayer).textContent = roundScore;
+            prevRoll = dice;
         }
         else {
             nextPlayer();
@@ -67,6 +69,7 @@ document.querySelector('.btn-new').addEventListener('click', init);
 
 function nextPlayer() {
     roundScore = 0;
+    prevRoll = 0;
     document.getElementById('current-' + activePlayer).textContent = roundScore;
 
     activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
@@ -81,6 +84,7 @@ function init() {
     scores = [0, 0];
     activePlayer = 0;
     roundScore = 0;
+    prevRoll = 0;
     gamePlaying = true;
 
     // Manipulate the CSS via the 'style'
